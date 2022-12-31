@@ -3,48 +3,53 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:ggiri/Screens/Widgets/Agriculture/ViewAgriCard.dart';
-import 'package:ggiri/Screens/Widgets/Cabs/ViewCabCard.dart';
+import 'package:ggiri/Screens/Widgets/AddVehicles/Backhoewidget.dart';
+import 'package:ggiri/Screens/Widgets/AddVehicles/Excavatorwidget.dart';
+import 'package:ggiri/Screens/Widgets/AddVehicles/LoaderWidget.dart';
 import 'package:ggiri/Screens/Widgets/SubVehicalCard.dart';
 import 'package:ggiri/Screens/Widgets/VehicalCard.dart';
 import 'package:ggiri/Screens/Widgets/ViewVCard.dart';
 import 'package:ggiri/Screens/Port/port.dart';
 import 'package:http/http.dart' as http;
-class AddSubSubAgri extends StatefulWidget {
-  String title,tag;
-  int Selected,code;
+class LoaderScreen extends StatefulWidget {
+  String title;
+  String staus;
+  String ext1,ext2;
 
 
-  AddSubSubAgri (this.title,this.tag,this.Selected,this.code);
+  LoaderScreen(this.title,this.staus,this.ext1,this.ext2);
 
   @override
-  State<AddSubSubAgri > createState() => _AddSubSubAgriState();
+  State<LoaderScreen> createState() => _LoaderScreenState();
 }
 
-class _AddSubSubAgriState extends State<AddSubSubAgri > {
-  List<List<String>> li=[["Dry Land","Wet Land"],["Ground Nut","Maize","Rice"],["Pump","Tractor","Drone"],["Ground Nut","Rice","Sun Flower","Redgrames","Maize"]];
-  String bselected='Dry Land';
+class _LoaderScreenState extends State<LoaderScreen> {
+  List type=["Mini","DCM","Tripper","Taurus","Tractor"];
+  List tyre=["100","200","300","400","500","600","700","800","900"];
+  List feet=["4","6","8","10","12","14","16"];
+  String selected='Mini';
+  String bselected='100';
+  String cselected='4';
   var da={};
   List de=[];
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    setState(() {
-     bselected=li[widget.Selected][widget.Selected];
-    });
     getdata();
   }
-  Future<void> filgterdata(String a) async{
+  Future<void> filgterdata(String a,String b,String c) async{
     try{
-      String url = port+"gettypef";
+      String url = port+widget.ext2;
       var response = await http.post(
           Uri.parse(url),
           headers:{"Content-type":"application/json;charset=UTF-8"},
           body: (
               jsonEncode(  {
                 "t":a,
-                "tag":widget.tag
+                "ty":c,
+                "f":b
               })
           )
 
@@ -63,15 +68,10 @@ class _AddSubSubAgriState extends State<AddSubSubAgri > {
   }
   Future<void> getdata()async{
     try{
-      String url =  port+"gettype";
-      var response = await http.post(
+      String url =  port+widget.ext1;
+      var response = await http.get(
         Uri.parse(url),
         headers:{"Content-type":"application/json;charset=UTF-8"},
-          body: (
-              jsonEncode(  {
-                "ta":widget.tag
-              })
-          )
       );
       setState(() {
         da=json.decode(response.body);
@@ -112,7 +112,7 @@ class _AddSubSubAgriState extends State<AddSubSubAgri > {
                             child: Center(child: Text("G",style: TextStyle(color: Colors.white,fontSize: 40,fontWeight: FontWeight.w600),),),
                           ),
                           SizedBox(width: 5,),
-                          Text(li[0][0].toString(),style: TextStyle(color: Color(0xff3A2AFA),fontSize: 40,fontWeight: FontWeight.w600),)
+                          Text("giri",style: TextStyle(color: Color(0xff3A2AFA),fontSize: 40,fontWeight: FontWeight.w600),)
                         ],
                       ),
                       SizedBox(height: 50,),
@@ -125,16 +125,43 @@ class _AddSubSubAgriState extends State<AddSubSubAgri > {
               borderRadius: BorderRadius.all(Radius.circular(10)),
               color: Color(0xff8FF8A300),
             ),child:
-            Center(child: Text(widget.title,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.w600),),),)
+            Center(child: Text(widget.title.toString(),style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.w600),),),)
               ,),
             SizedBox(height: 20,),
-            Padding(padding: EdgeInsets.only(left: 20,right: 20),child:   Row(
-
-              mainAxisAlignment: MainAxisAlignment.center,
+            Padding(padding: EdgeInsets.only(left: 10,right: 10),child:   Row(
               children: [
                 Container(
                   height: 50,
-                  width: 150,
+                  width: MediaQuery.of(context).size.width/3.5,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      border: Border.all(color:Colors.black,width: 2)
+                  ),
+                  child: DropdownButton(
+                    hint: Text("Select",style: TextStyle(color: Colors.black),),
+                    value:  selected,
+                    dropdownColor: Colors.white,
+                    style: TextStyle(color: Colors.black),
+                    onChanged: (value){
+                      setState(() {
+                        selected=value.toString();
+                      });
+                      setState(() {
+                        de=[];
+                      });
+                      filgterdata(selected, bselected,cselected);
+                    },
+                    items:type.map((e){
+                      return DropdownMenuItem(value: e
+                          ,child: Padding(padding: EdgeInsets.all(10),child: Text(e,style: TextStyle(color: Colors.black),)));
+                    }).toList(),
+
+                  ),
+                ),
+                Spacer(),
+                Container(
+                  height: 50,
+                  width: MediaQuery.of(context).size.width/3,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(5)),
                       border: Border.all(color:Colors.black,width: 2)
@@ -151,17 +178,44 @@ class _AddSubSubAgriState extends State<AddSubSubAgri > {
                       setState(() {
                         de=[];
                       });
-                      filgterdata(bselected);
+                      filgterdata(selected, bselected,cselected);
                     },
-                    items:li[widget.Selected].map((e){
+                    items:tyre.map((e){
                       return DropdownMenuItem(value: e
                           ,child: Padding(padding: EdgeInsets.all(10),child: Text(e,style: TextStyle(color: Colors.black),)));
                     }).toList(),
 
                   ),
                 ),
+                Spacer(),
+                Container(
+                  height: 50,
+                  width: MediaQuery.of(context).size.width/4,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      border: Border.all(color:Colors.black,width: 2)
+                  ),
+                  child: DropdownButton(
+                    hint: Text("Select",style: TextStyle(color: Colors.black),),
+                    value:  cselected,
+                    dropdownColor: Colors.white,
+                    style: TextStyle(color: Colors.black),
+                    onChanged: (value){
+                      setState(() {
+                        cselected=value.toString();
+                      });
+                      setState(() {
+                        de=[];
+                      });
+                      filgterdata(selected, bselected,cselected);
+                    },
+                    items:feet.map((e){
+                      return DropdownMenuItem(value: e
+                          ,child: Padding(padding: EdgeInsets.all(10),child: Text(e,style: TextStyle(color: Colors.black),)));
+                    }).toList(),
 
-
+                  ),
+                ),
               ],
             ),),
             SizedBox(height: 10,),
@@ -173,14 +227,15 @@ class _AddSubSubAgriState extends State<AddSubSubAgri > {
                 itemCount:de.length,
                 itemBuilder: (context, index) {
                   return  GestureDetector(onTap: (){
-                    //  String img,com,model,price,type,status,Capacity;
-                  },child: ViewAgriCard(de[index]["img"], de[index]["model"],de[index]["price"],de[index]["type"],de[index]["name"],0)) ;
+                    //String img,com,model,price,type,tyre,feet,status;
+                  },child: LoaderCard(de[index]["img"], de[index]["company"], de[index]["model"],de[index]["price"],de[index]["type"],de[index]["tyre"],de[index]["feet"],"l")) ;
                 },
               ),
             ):Container(child: Center(
               child: Text("Loading.............."),
             ),)
-            //ViewAgriCard("https://images.pexels.com/photos/207247/pexels-photo-207247.jpeg?auto=compress&cs=tinysrgb&w=600", "220F", "220F ","wet" ,"Agro 3 lane"),
+
+
 
           ],
         ),
@@ -188,3 +243,4 @@ class _AddSubSubAgriState extends State<AddSubSubAgri > {
     );
   }
 }
+//his.img, this.com, this.model, this.price, this.capacity, this.type,this.tyre,this.feet,this.status

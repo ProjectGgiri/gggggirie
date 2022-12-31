@@ -38,7 +38,7 @@ class _BackhoeCardState extends State<BackhoeCard> {
                   width: 150,
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: AssetImage(widget.img),fit: BoxFit.fill
+                          image: NetworkImage(widget.img),fit: BoxFit.fill
                       )
                   ),
                 ),

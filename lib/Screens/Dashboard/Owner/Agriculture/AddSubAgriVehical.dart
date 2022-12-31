@@ -3,6 +3,7 @@ import 'package:ggiri/Screens/Widgets/Agriculture/SubAgriCard.dart';
 import 'package:ggiri/Screens/Widgets/Cabs/SubCabCard.dart';
 import 'package:ggiri/Screens/Widgets/SubVehicalCard.dart';
 import 'package:ggiri/Screens/Widgets/VehicalCard.dart';
+
 class AddSubAgriVehical extends StatefulWidget {
   const AddSubAgriVehical({Key? key}) : super(key: key);
 
@@ -11,6 +12,7 @@ class AddSubAgriVehical extends StatefulWidget {
 }
 
 class _AddSubAgriVehicalState extends State<AddSubAgriVehical> {
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -60,17 +62,17 @@ class _AddSubAgriVehicalState extends State<AddSubAgriVehical> {
                 SizedBox(height: 30,),
                 Row(
                   children: [
-                    SubAgriCard("assets/images/4.1.png","CULTIVATORS"),
+                    SubAgriCard("assets/images/4.1.png","CULTIVATORS","C",0,0),
                     SizedBox(width: 20,),
-                    SubAgriCard("assets/images/4.2.png","SEEDERS"),
+                    SubAgriCard("assets/images/4.2.png","SEEDERS","SEE",1,0),
                   ],
                 ),
                 SizedBox(height: 20,),
                 Row(
                   children: [
-                    SubAgriCard("assets/images/4.3.png","SPRAYERS"),
+                    SubAgriCard("assets/images/4.3.png","SPRAYERS","SP",2,0),
                     SizedBox(width: 20,),
-                    SubAgriCard("assets/images/4.4.png","HARVESTERS"),
+                    SubAgriCard("assets/images/4.4.png","HARVESTERS","H",3,0),
 
                   ],
                 ),

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:ggiri/Screens/Dashboard/User/CabBook.dart';
+import 'package:ggiri/Screens/Port/port.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 class ViewCabCard extends StatefulWidget {
-  String img,price,type,name;
+  String img,price,type,name,code;
 
   ViewCabCard(
-      this.img, this.price,this.type,this.name);
+      this.img, this.price,this.type,this.name,this.code);
 
   @override
   State<ViewCabCard> createState() => _ViewCabCardState();
@@ -16,7 +20,7 @@ class _ViewCabCardState extends State<ViewCabCard> {
     return Padding(
       padding: EdgeInsets.all(20),
       child: Container(
-        height: 400,
+        height: 300,
         width: 200,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -57,7 +61,11 @@ class _ViewCabCardState extends State<ViewCabCard> {
             SizedBox(height: 10,),
             GestureDetector(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>CabBookScreen(widget.img,widget.price, widget.type,widget.name)));
+                if(widget.code=="f"){
+                  EasyLoading.show(status: "Wait.....");
+                  filgterdata();
+                }
+                //  Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>CabBookScreen(widget.img,widget.price, widget.type,widget.name)));
               },
               child: Container(
                 height: 50,
@@ -72,5 +80,44 @@ class _ViewCabCardState extends State<ViewCabCard> {
         ),
       ),
     );
+  }
+  Future<void> filgterdata() async{
+    try{
+      String url = port+"adddril";
+      var response = await http.post(
+          Uri.parse(url),
+          headers:{"Content-type":"application/json;charset=UTF-8"},
+          body: (
+              jsonEncode(  {
+
+                "did":"did123",
+
+                "dwid": "dwid1234",
+                "type": "C",
+                "st":"NA",
+                "detail": {
+
+
+                  "name": widget.name,
+                  "stype": widget.type,
+                  "price": widget.price,
+                  "img":widget.img
+                }
+
+
+
+              })
+          )
+
+
+      );
+      if(response.statusCode==200){
+        EasyLoading.showSuccess("All Done");
+      }
+
+    }catch(error){
+      print(error.toString());
+    }
+
   }
 }

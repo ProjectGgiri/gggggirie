@@ -3,48 +3,39 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:ggiri/Screens/Widgets/Agriculture/ViewAgriCard.dart';
 import 'package:ggiri/Screens/Widgets/Cabs/ViewCabCard.dart';
 import 'package:ggiri/Screens/Widgets/SubVehicalCard.dart';
 import 'package:ggiri/Screens/Widgets/VehicalCard.dart';
 import 'package:ggiri/Screens/Widgets/ViewVCard.dart';
 import 'package:ggiri/Screens/Port/port.dart';
 import 'package:http/http.dart' as http;
-class AddSubSubAgri extends StatefulWidget {
-  String title,tag;
-  int Selected,code;
+class AddCarCab extends StatefulWidget {
+  String title,exp1,exp2,status,code;
 
 
-  AddSubSubAgri (this.title,this.tag,this.Selected,this.code);
+  AddCarCab(this.title,this.exp1,this.exp2,this.status,this.code);
 
   @override
-  State<AddSubSubAgri > createState() => _AddSubSubAgriState();
+  State<AddCarCab> createState() => _AddCarCabState();
 }
 
-class _AddSubSubAgriState extends State<AddSubSubAgri > {
-  List<List<String>> li=[["Dry Land","Wet Land"],["Ground Nut","Maize","Rice"],["Pump","Tractor","Drone"],["Ground Nut","Rice","Sun Flower","Redgrames","Maize"]];
-  String bselected='Dry Land';
+class _AddCarCabState extends State<AddCarCab> {
+  List type=["Mini","Sedan","Large"];
+  String selected="Mini";
+
   var da={};
   List de=[];
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    setState(() {
-     bselected=li[widget.Selected][widget.Selected];
-    });
-    getdata();
-  }
+
   Future<void> filgterdata(String a) async{
     try{
-      String url = port+"gettypef";
+      String url = port+widget.exp2;
       var response = await http.post(
           Uri.parse(url),
           headers:{"Content-type":"application/json;charset=UTF-8"},
           body: (
               jsonEncode(  {
-                "t":a,
-                "tag":widget.tag
+                "ct":widget.status,
+                "st":a
               })
           )
 
@@ -63,16 +54,17 @@ class _AddSubSubAgriState extends State<AddSubSubAgri > {
   }
   Future<void> getdata()async{
     try{
-      String url =  port+"gettype";
+      String url =  port+widget.exp1;
       var response = await http.post(
         Uri.parse(url),
         headers:{"Content-type":"application/json;charset=UTF-8"},
           body: (
               jsonEncode(  {
-                "ta":widget.tag
+               "cabt":widget.status
               })
           )
       );
+
       setState(() {
         da=json.decode(response.body);
         de=da["detail"];
@@ -84,6 +76,12 @@ class _AddSubSubAgriState extends State<AddSubSubAgri > {
       print(error.toString());
     }
 
+  }
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getdata();
   }
   @override
   Widget build(BuildContext context) {
@@ -112,7 +110,7 @@ class _AddSubSubAgriState extends State<AddSubSubAgri > {
                             child: Center(child: Text("G",style: TextStyle(color: Colors.white,fontSize: 40,fontWeight: FontWeight.w600),),),
                           ),
                           SizedBox(width: 5,),
-                          Text(li[0][0].toString(),style: TextStyle(color: Color(0xff3A2AFA),fontSize: 40,fontWeight: FontWeight.w600),)
+                          Text("giri",style: TextStyle(color: Color(0xff3A2AFA),fontSize: 40,fontWeight: FontWeight.w600),)
                         ],
                       ),
                       SizedBox(height: 50,),
@@ -141,19 +139,19 @@ class _AddSubSubAgriState extends State<AddSubSubAgri > {
                   ),
                   child: DropdownButton(
                     hint: Text("Select",style: TextStyle(color: Colors.black),),
-                    value:  bselected,
+                    value:  selected,
                     dropdownColor: Colors.white,
                     style: TextStyle(color: Colors.black),
                     onChanged: (value){
                       setState(() {
-                        bselected=value.toString();
+                        selected=value.toString();
                       });
                       setState(() {
                         de=[];
                       });
-                      filgterdata(bselected);
+                      filgterdata(selected);
                     },
-                    items:li[widget.Selected].map((e){
+                    items:type.map((e){
                       return DropdownMenuItem(value: e
                           ,child: Padding(padding: EdgeInsets.all(10),child: Text(e,style: TextStyle(color: Colors.black),)));
                     }).toList(),
@@ -165,6 +163,7 @@ class _AddSubSubAgriState extends State<AddSubSubAgri > {
               ],
             ),),
             SizedBox(height: 10,),
+           // ViewCabCard("https://s3-alpha-sig.figma.com/img/4430/a8b9/8951d85d92da9a4b8bdadc7c161aa89b?Expires=1667174400&Signature=PnglcGJtS0FJZEkbY9NylnUXqyHt4kyq7u-EKl6RcnLn9U~AcCjezOsLI-owt-jHiNAj8HQuTQSiVFync~isH4DUsGebkqs9t1bg4Qxrwb3ps58I4N~rzpY9dG7VXstZcUxaAXkWAhiPzARygudme59JbyXhZIHK3N9vHnjAifDSL7IGNtq2IxOP4j8A8F-k07CwJeEKAHa0p776zS0U67GL98zPgEANm2nynQvqahARmEJfdGYU~Y5dSZHg~wmTyRtRsqo~AAaIffib79Fe~He854wQo~xm-4wZ5Elled5T~N-tj0O~5TFEWWAtGkBjtg4JU9RDNmTETLdcj-U0bg__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA",  "1500/Hr", "mini", "Hundai"),
             de!=null?Expanded(
               child: AlignedGridView.count(
                 crossAxisCount: 2,
@@ -173,14 +172,14 @@ class _AddSubSubAgriState extends State<AddSubSubAgri > {
                 itemCount:de.length,
                 itemBuilder: (context, index) {
                   return  GestureDetector(onTap: (){
+                   // String img,price,type,name;
                     //  String img,com,model,price,type,status,Capacity;
-                  },child: ViewAgriCard(de[index]["img"], de[index]["model"],de[index]["price"],de[index]["type"],de[index]["name"],0)) ;
+                  },child: ViewCabCard(de[index]["img"], de[index]["price"], de[index]["stype"],de[index]["name"],"f")) ;
                 },
               ),
             ):Container(child: Center(
               child: Text("Loading.............."),
             ),)
-            //ViewAgriCard("https://images.pexels.com/photos/207247/pexels-photo-207247.jpeg?auto=compress&cs=tinysrgb&w=600", "220F", "220F ","wet" ,"Agro 3 lane"),
 
           ],
         ),

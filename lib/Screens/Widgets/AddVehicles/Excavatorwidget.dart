@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:ggiri/Screens/Dashboard/Owner/CongratScreen.dart';
 import 'package:ggiri/Screens/Dashboard/Owner/SelectVehical.dart';
 import 'package:ggiri/Screens/Dashboard/User/UserBookVehicles.dart';
-import 'package:ggiri/Screens/Widgets/AddVehicles/CompactorBooking.dart';
-class CompactorCard extends StatefulWidget {
-  String img,com,model,price,type,status;
+class EcavatorCard extends StatefulWidget {
+  String img,com,model,type,capacity,price;
 
-  CompactorCard(this.img, this.com, this.model, this.price, this.type,this.status);
+  EcavatorCard(this.img, this.com, this.model,this.type, this.capacity,this.price);
 
   @override
-  State<CompactorCard> createState() => _CompactorCardState();
+  State<EcavatorCard> createState() => _EcavatorCardState();
 }
 
-class _CompactorCardState extends State<CompactorCard> {
+class _EcavatorCardState extends State<EcavatorCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -52,6 +51,8 @@ class _CompactorCardState extends State<CompactorCard> {
             SizedBox(height: 10,),
             Text("Type: "+widget.type,maxLines: 1,style: TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w800),),
             SizedBox(height: 10,),
+            Text("Capacity :  "+widget.capacity,maxLines: 1,style: TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w800),),
+            SizedBox(height: 10,),
             Row(
               children: [
                 Text("Price: ",maxLines: 1,style: TextStyle(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w800),),
@@ -61,11 +62,7 @@ class _CompactorCardState extends State<CompactorCard> {
             SizedBox(height: 10,),
             GestureDetector(
               onTap: (){
-                if(widget.status=="do"){
-                  Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>CongraScreen("Go to Dashboard","do")));
-                }else{
-                 Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>CompactorBooing(widget.img, widget.com, widget.model, widget.price,"nfhheu")));
-                }
+
                 //img,com,model,price,capacity,type,name;
               },
               child: Container(

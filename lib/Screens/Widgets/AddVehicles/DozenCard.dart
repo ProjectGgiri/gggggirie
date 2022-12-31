@@ -39,7 +39,7 @@ class _DozenCardState extends State<DozenCard > {
                   width: 150,
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: AssetImage(widget.img),fit: BoxFit.fill
+                          image: NetworkImage(widget.img),fit: BoxFit.fill
                       )
                   ),
                 ),

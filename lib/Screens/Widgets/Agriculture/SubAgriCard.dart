@@ -5,21 +5,24 @@ import 'package:ggiri/Screens/Dashboard/Owner/SubSubCat.dart';
 import 'package:ggiri/Screens/Dashboard/Owner/WORK/SubSubWorkCat.dart';
 class SubAgriCard extends StatefulWidget {
 
-  String filename,title;
+  String filename,title,tag;
+  int sel,code;
 
 
-  SubAgriCard ( this.filename, this.title);
+
+  SubAgriCard ( this.filename, this.title,this.tag,this.sel,this.code);
 
   @override
   State<SubAgriCard > createState() => _SubAgriCardState();
 }
 
 class _SubAgriCardState extends State<SubAgriCard > {
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>AddSubSubAgri(widget.title)));
+        Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>AddSubSubAgri(widget.title,widget.tag,widget.sel,0)));
       },
       child: Container(
         height: 150,

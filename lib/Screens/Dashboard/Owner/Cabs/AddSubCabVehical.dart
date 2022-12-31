@@ -59,15 +59,15 @@ class _AddSubCabVehicalState extends State<AddSubCabVehical> {
                 SizedBox(height: 30,),
                 Row(
                   children: [
-                    SubCabCard("assets/images/3.1.png","CAR"),
+                    SubCabCard("assets/images/3.1.png","CAR","c"),
                     SizedBox(width: 20,),
-                    SubCabCard("assets/images/3.2.png","AUTO"),
+                    SubCabCard("assets/images/3.2.png","AUTO","a"),
                   ],
                 ),
                 SizedBox(height: 20,),
                 Row(
                   children: [
-                    SubCabCard("assets/images/3.3.png","BIKE"),
+                    SubCabCard("assets/images/3.3.png","BIKE","b"),
                     SizedBox(width: 20,),
 
                   ],

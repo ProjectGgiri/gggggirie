@@ -1,30 +1,92 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:ggiri/Screens/Widgets/AddVehicles/Backhoewidget.dart';
 import 'package:ggiri/Screens/Widgets/AddVehicles/CompactorWidget.dart';
+import 'package:ggiri/Screens/Widgets/AddVehicles/Excavatorwidget.dart';
+import 'package:ggiri/Screens/Widgets/AddVehicles/LoaderWidget.dart';
 import 'package:ggiri/Screens/Widgets/SubVehicalCard.dart';
 import 'package:ggiri/Screens/Widgets/VehicalCard.dart';
 import 'package:ggiri/Screens/Widgets/ViewVCard.dart';
+import 'package:ggiri/Screens/Port/port.dart';
+import 'package:http/http.dart' as http;
 class CompactorScreen extends StatefulWidget {
   String title;
   String staus;
+  String ext1,ext2;
 
 
-  CompactorScreen(this.title,this.staus);
+  CompactorScreen(this.title,this.staus,this.ext1,this.ext2);
 
   @override
   State<CompactorScreen> createState() => _CompactorScreenState();
 }
 
 class _CompactorScreenState extends State<CompactorScreen> {
-  List ListItems=["Male","Female"];
-  List BListItems=["O+","A+",'B+','C+'];
-  String selected='Male';
-  String bselected='O+';
+  List type=["Soil","Road"];
+
+  String selected='Soil';
+
+  var da={};
+  List de=[];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getdata();
+  }
+  Future<void> filgterdata(String a) async{
+    try{
+      String url = port+widget.ext2;
+      var response = await http.post(
+          Uri.parse(url),
+          headers:{"Content-type":"application/json;charset=UTF-8"},
+          body: (
+              jsonEncode(  {
+                "t":a,
+              })
+          )
+
+
+      );
+      setState(() {
+        da=json.decode(response.body);
+        de=da["detail"];
+      });
+
+
+    }catch(error){
+      print(error.toString());
+    }
+
+  }
+  Future<void> getdata()async{
+    try{
+      String url =  port+widget.ext1;
+      var response = await http.get(
+        Uri.parse(url),
+        headers:{"Content-type":"application/json;charset=UTF-8"},
+      );
+      setState(() {
+        da=json.decode(response.body);
+        de=da["detail"];
+        EasyLoading.showToast(de.toString());
+      });
+
+
+    }catch(error){
+      print(error.toString());
+    }
+
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: ListView(
+        body: Column(
           children: [
             Container(height: 200,width: MediaQuery.of(context).size.width,
               child:Container(
@@ -60,91 +122,61 @@ class _CompactorScreenState extends State<CompactorScreen> {
               borderRadius: BorderRadius.all(Radius.circular(10)),
               color: Color(0xff8FF8A300),
             ),child:
-            Center(child: Text(widget.title,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.w600),),),)
+            Center(child: Text(widget.title.toString(),style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.w600),),),)
               ,),
             SizedBox(height: 20,),
-            Padding(padding: EdgeInsets.only(left: 20,right: 20),child:   Row(
+            Padding(padding: EdgeInsets.only(left: 10,right: 10),child:   Row(
               children: [
-                Container(
-                  height: 50,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      border: Border.all(color:Colors.black,width: 2)
-                  ),
-                  child: DropdownButton(
-                    hint: Text("Select",style: TextStyle(color: Colors.black),),
-                    value:  selected,
-                    dropdownColor: Colors.blue,
-                    style: TextStyle(color: Colors.black),
-                    onChanged: (value){
-                      setState(() {
-                        selected=value.toString();
-                      });
-                    },
-                    items:ListItems.map((e){
-                      return DropdownMenuItem(value: e
-                          ,child: Padding(padding: EdgeInsets.all(10),child: Text(e,style: TextStyle(color: Colors.black),)));
-                    }).toList(),
+                Center(
+                  child: Container(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width/3.5,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        border: Border.all(color:Colors.black,width: 2)
+                    ),
+                    child: DropdownButton(
+                      hint: Text("Select",style: TextStyle(color: Colors.black),),
+                      value:  selected,
+                      dropdownColor: Colors.white,
+                      style: TextStyle(color: Colors.black),
+                      onChanged: (value){
+                        setState(() {
+                          selected=value.toString();
+                        });
+                        setState(() {
+                          de=[];
+                        });
+                        filgterdata(selected);
+                      },
+                      items:type.map((e){
+                        return DropdownMenuItem(value: e
+                            ,child: Padding(padding: EdgeInsets.all(10),child: Text(e,style: TextStyle(color: Colors.black),)));
+                      }).toList(),
 
-                  ),
-                ),
-                Spacer(),
-                Container(
-                  height: 50,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      border: Border.all(color:Colors.black,width: 2)
-                  ),
-                  child: DropdownButton(
-                    hint: Text("Select",style: TextStyle(color: Colors.black),),
-                    value:  bselected,
-                    dropdownColor: Colors.blue,
-                    style: TextStyle(color: Colors.black),
-                    onChanged: (value){
-                      setState(() {
-                        bselected=value.toString();
-                      });
-                    },
-                    items:BListItems.map((e){
-                      return DropdownMenuItem(value: e
-                          ,child: Padding(padding: EdgeInsets.all(10),child: Text(e,style: TextStyle(color: Colors.black),)));
-                    }).toList(),
-
-                  ),
-                ),
-                Spacer(),
-                Container(
-                  height: 50,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      border: Border.all(color:Colors.black,width: 2)
-                  ),
-                  child: DropdownButton(
-                    hint: Text("Select",style: TextStyle(color: Colors.black),),
-                    value:  bselected,
-                    dropdownColor: Colors.blue,
-                    style: TextStyle(color: Colors.black),
-                    onChanged: (value){
-                      setState(() {
-                        bselected=value.toString();
-                      });
-                    },
-                    items:BListItems.map((e){
-                      return DropdownMenuItem(value: e
-                          ,child: Padding(padding: EdgeInsets.all(10),child: Text(e,style: TextStyle(color: Colors.black),)));
-                    }).toList(),
-
+                    ),
                   ),
                 ),
 
               ],
             ),),
             SizedBox(height: 10,),
-            CompactorCard("assets/images/1.5.png", "TATA Ace", "220F","Soil Compactor", "1500/Hr",widget.staus),
-            CompactorCard("assets/images/1.5.png", "TATA Ace", "220F","Soil Compactor", "1500/Hr",widget.staus),
+            de!=null?Expanded(
+              child: AlignedGridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4,
+                itemCount:de.length,
+                itemBuilder: (context, index) {
+                  return  GestureDetector(onTap: (){
+                    //this.img, this.com, this.model, this.price, this.type,this.status
+                  },child: CompactorCard(de[index]["img"], de[index]["company"], de[index]["model"],de[index]["price"],de[index]["type"],"c")) ;
+                },
+              ),
+            ):Container(child: Center(
+              child: Text("Loading.............."),
+            ),)
+
 
 
           ],

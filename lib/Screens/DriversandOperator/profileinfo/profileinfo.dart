@@ -1,7 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:ggiri/Screens/Dashboard/Owner/Welcome.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+
+import '../../Port/port.dart';
 class ProfileinfoDriver extends StatefulWidget {
   String status;
 
@@ -13,11 +19,19 @@ class ProfileinfoDriver extends StatefulWidget {
 }
 
 class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
-  List ListItems=["Male","Female"];
-  File? file=null;
-  List BListItems=["O+","A+",'B+','C+'];
   String selected='Male';
   String bselected='O+';
+  List ListItems=["Male","Female"];
+  List BListItems=["O+","A+",'B+','C+'];
+  String durl="";
+  late String selgen="Male",selblood="O+",selstate="TELANGANA",seldis="ADILABAD";
+  List States=["TELANGANA"];
+  List District=["ADILABAD","BHADRADRI KOTHAGUDEM","HANUMAKONDA","Jagitial","JANGOAN","JAYASHANKAR BHUPALAPALLY","JOGULAMBA GADWAL","KAMAREDDY","KARIMNAGAR","KHAMMAM","KUMURAM BHEEM ASIFABAD","MAHABUBABAD","MAHABUBNAGAR","Mancherial","MEDAK","MEDCHAL MALKAJGIRI","Mulugu","NAGARKURNOOL","NALGONDA","Narayanpet","Nirmal","NIZAMABAD","Peddapalli","RAJANNA SIRCILLA","RANGAREDDI","SANGAREDDY","SIDDIPET","SURYAPET","VIKARABAD","WANAPARTHY","WARANGAL","YADADRI BHUVANAGIRI"];
+  File? file=null;
+  File? back=null, front=null;
+  String? backdurl=null, frontdurl=null;
+
+  late String dob,gender,bloodgroup,address,state,district,pincode;
   @override
   Widget build(BuildContext context) {
     return SafeArea(child:Scaffold(
@@ -55,23 +69,38 @@ class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
                     ),
                   ),
                 ),
-                Positioned(left: 100,right: 100,top: 180,child:Container(
-                  height: 150,
-                  width: 150,
-                  decoration: BoxDecoration(
-                      color: Color(0xffE7E7E7),
-                      border: Border.all(color: Colors.white,width: 5),
-                      borderRadius: BorderRadius.all(Radius.circular(100),)
-                  ),
-                  child: Center(child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.camera_alt_outlined,size: 60,),
-                      SizedBox(height: 10,),
-                      Text("UPLOAD",style: TextStyle(color: Colors.black,fontSize: 10,fontWeight: FontWeight.w600),)
+                Positioned(left: 100,right: 100,top: 180,child:GestureDetector(
+                  onTap: (){
+                    getimage(ImageSource.gallery, 0);
+                  },
+                  child: file!=null?Container(
+                    height: 150,
+                    width: 150,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white,width: 3),
+                        image: DecorationImage(
+                            image: FileImage(file!),fit: BoxFit.fill
+                        )
+                    ),
+                  ): Container(
+                    height: 150,
+                    width: 150,
+                    decoration: BoxDecoration(
+                        color: Color(0xffE7E7E7),
+                        border: Border.all(color: Colors.white,width: 5),
+                        borderRadius: BorderRadius.all(Radius.circular(100),)
+                    ),
+                    child: Center(child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.camera_alt_outlined,size: 60,),
+                        SizedBox(height: 10,),
+                        Text("UPLOAD",style: TextStyle(color: Colors.black,fontSize: 10,fontWeight: FontWeight.w600),)
 
-                    ],
-                  ),),
+                      ],
+                    ),),
+                  ),
                 ))
               ],
             ),),
@@ -105,7 +134,7 @@ class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
                             keyboardType:TextInputType.text,
                             onChanged: (value){
                               setState(() {
-
+                               dob=value;
                               });
                             },
                             maxLines: 50,
@@ -142,12 +171,24 @@ class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
                     Row(
                       children: [
                         Column(children: [
-                          Container(
-                            height: 150,
-                            width: 150,
-                            decoration: BoxDecoration(color: Color(0xffE7E7E7),borderRadius: BorderRadius.all(Radius.circular(10))),
-                            child: Center(
-                              child: Icon(Icons.camera_alt_outlined),
+                          GestureDetector(
+                            onTap: (){
+                              getimage(ImageSource.gallery, 1);
+                            },
+                            child: front!=null?Container(
+                              height: 150,
+                              width: 150,
+                              decoration: BoxDecoration(color: Color(0xffE7E7E7),borderRadius: BorderRadius.all(Radius.circular(10)),image:
+                               DecorationImage(
+                                  image: FileImage(front!),fit: BoxFit.fill
+                                 )  ),
+                            ):Container(
+                              height: 150,
+                              width: 150,
+                              decoration: BoxDecoration(color: Color(0xffE7E7E7),borderRadius: BorderRadius.all(Radius.circular(10))),
+                              child: Center(
+                                child: Icon(Icons.camera_alt_outlined),
+                              ),
                             ),
                           ),
                           SizedBox(height: 10,),
@@ -155,12 +196,24 @@ class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
                         ],),
                         Spacer(),
                         Column(children: [
-                          Container(
-                            height: 150,
-                            width: 150,
-                            decoration: BoxDecoration(color: Color(0xffE7E7E7),borderRadius: BorderRadius.all(Radius.circular(10))),
-                            child: Center(
-                              child: Icon(Icons.camera_alt_outlined),
+                          GestureDetector(
+                            onTap: (){
+                              getimage(ImageSource.gallery, 2);
+                            },
+                            child: back!=null?Container(
+                              height: 150,
+                              width: 150,
+                              decoration: BoxDecoration(color: Color(0xffE7E7E7),borderRadius: BorderRadius.all(Radius.circular(10)),image:
+                              DecorationImage(
+                                  image: FileImage(back!),fit: BoxFit.fill
+                              )  ),
+                            ):Container(
+                              height: 150,
+                              width: 150,
+                              decoration: BoxDecoration(color: Color(0xffE7E7E7),borderRadius: BorderRadius.all(Radius.circular(10))),
+                              child: Center(
+                                child: Icon(Icons.camera_alt_outlined),
+                              ),
                             ),
                           ),
                           SizedBox(height: 10,),
@@ -192,7 +245,7 @@ class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
                       child: DropdownButton(
                         hint: Text("Select",style: TextStyle(color: Colors.black),),
                         value:  bselected,
-                        dropdownColor: Colors.blue,
+                        dropdownColor:  Colors.white,
                         style: TextStyle(color: Colors.black),
                         onChanged: (value){
                           setState(() {
@@ -221,11 +274,12 @@ class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
                       child: DropdownButton(
                         hint: Text("Select",style: TextStyle(color: Colors.black),),
                         value:  selected,
-                        dropdownColor: Colors.blue,
+                        dropdownColor: Colors.white,
                         style: TextStyle(color: Colors.black),
                         onChanged: (value){
                           setState(() {
                             selected=value.toString();
+
                           });
                         },
                         items:ListItems.map((e){
@@ -261,7 +315,9 @@ class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
                         keyboardType:TextInputType.text,
                         onChanged: (value){
                           setState(() {
-
+                            setState(() {
+                              address=value.toString();
+                            });
                           });
                         },
                         maxLines: 50,
@@ -296,15 +352,15 @@ class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
                         ),
                         child: DropdownButton(
                           hint: Text("Select",style: TextStyle(color: Colors.black),),
-                          value:  selected,
-                          dropdownColor: Colors.blue,
+                          value:  selstate,
+                          dropdownColor:  Colors.white,
                           style: TextStyle(color: Colors.black),
                           onChanged: (value){
                             setState(() {
-                              selected=value.toString();
+                              selstate=value.toString();
                             });
                           },
-                          items:ListItems.map((e){
+                          items:States.map((e){
                             return DropdownMenuItem(value: e
                                 ,child: Padding(padding: EdgeInsets.all(10),child: Text(e,style: TextStyle(color: Colors.black),)));
                           }).toList(),
@@ -328,15 +384,15 @@ class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
                         ),
                         child: DropdownButton(
                           hint: Text("Select",style: TextStyle(color: Colors.black),),
-                          value:  selected,
-                          dropdownColor: Colors.blue,
+                          value:  seldis,
+                          dropdownColor:  Colors.white,
                           style: TextStyle(color: Colors.black),
                           onChanged: (value){
                             setState(() {
-                              selected=value.toString();
+                              seldis=value.toString();
                             });
                           },
-                          items:ListItems.map((e){
+                          items:District.map((e){
                             return DropdownMenuItem(value: e
                                 ,child: Padding(padding: EdgeInsets.all(10),child: Text(e,style: TextStyle(color: Colors.black),)));
                           }).toList(),
@@ -370,15 +426,18 @@ class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
                         keyboardType:TextInputType.text,
                         onChanged: (value){
                           setState(() {
-
+                            setState(() {
+                              pincode=value.toString();
+                            });
                           });
                         },
-                        maxLines: 50,
+                        maxLines: 6,
                         decoration: InputDecoration(
                           focusColor: Colors.white,
                           hintText:"102345",
                           hintStyle: TextStyle(color: Colors.black),
                           border:InputBorder.none,
+                          counterText: "",
                         ),
                       ),
                     ),
@@ -395,7 +454,15 @@ class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
             padding: EdgeInsets.only(left: 50,right: 50),
             child: GestureDetector(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>OwnWelcome(widget.status)));
+               Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>OwnWelcome(widget.status)));
+
+                if(file!=null&&front!=null&&back!=null){
+                  EasyLoading.show(status: "Wait.........");
+                  up();
+
+                }else{
+                  EasyLoading.showError("Please select all 3 Images Please ?");
+                }
               },
               child: Container(height: 60,width: 200,
                 decoration:  BoxDecoration(
@@ -413,5 +480,111 @@ class _ProfileinfoDriverState extends State<ProfileinfoDriver> {
         ],
       ),
     ));
+  }
+  getimage(ImageSource gallery,int i)async {
+    PickedFile? imag=await ImagePicker().getImage(source:gallery,imageQuality: 50 ,maxHeight:400 ,maxWidth:400 );
+    if(i==0){
+      setState(() {
+        file =File(imag!.path);
+      });
+    }else if(i==1){
+      setState(() {
+        front =File(imag!.path);
+      });
+    }else if(i==2){
+      setState(() {
+        back =File(imag!.path);
+      });
+    }
+  }
+  up()async{
+    var responce =await http.MultipartRequest("POST",Uri.parse(port+"upload"));
+    responce.files.add(await http.MultipartFile.fromPath("profile",file!.path ));
+    responce.headers.addAll({"Content-type":"multipart/form-data"});
+    var res=await responce.send();
+    if(res.statusCode==200 || res.statusCode==201){
+      var responseString = await res.stream.bytesToString();
+      final decodedMap = json.decode(responseString);
+      setState(() {
+        durl=decodedMap['profile_url'];
+      });
+
+      upfront();
+    }else{
+      EasyLoading.showError("Uploaded error");
+    }
+  }
+  upfront()async{
+    var responce =await http.MultipartRequest("POST",Uri.parse(port+"upload"));
+    responce.files.add(await http.MultipartFile.fromPath("profile",front!.path ));
+    responce.headers.addAll({"Content-type":"multipart/form-data"});
+    var res=await responce.send();
+    if(res.statusCode==200 || res.statusCode==201){
+      var responseString = await res.stream.bytesToString();
+      final decodedMap = json.decode(responseString);
+      setState(() {
+        frontdurl=decodedMap['profile_url'];
+      });
+      EasyLoading.showToast(frontdurl.toString());
+      upback();
+    }else{
+      EasyLoading.showError("Uploaded error");
+    }
+  }
+  upback()async{
+    var responce =await http.MultipartRequest("POST",Uri.parse(port+"upload"));
+    responce.files.add(await http.MultipartFile.fromPath("profile",back!.path ));
+    responce.headers.addAll({"Content-type":"multipart/form-data"});
+    var res=await responce.send();
+
+
+    if(res.statusCode==200 || res.statusCode==201){
+      var responseString = await res.stream.bytesToString();
+      final decodedMap = json.decode(responseString);
+      setState(() {
+        backdurl=decodedMap['profile_url'];
+      });
+
+      update();
+    }else{
+      EasyLoading.showError("Uploaded error");
+    }
+  }
+  void update()async{
+    try{
+      String url = port+"adddriver";
+      var response = await http.post(
+          Uri.parse(url),
+          headers:{"Content-type":"application/json;charset=UTF-8"},
+          body: (
+              jsonEncode(  {
+                "name":"Verrender Singh",
+                "purl": durl,
+                "bgroup": bselected,
+                "address": address,
+                "dob":dob,
+                "gender":false,
+                "front": frontdurl,
+                "back": backdurl,
+                "State":selstate,
+                "District": seldis,
+                "Pincode": pincode,
+                "did": "didmkwdkwmdkkdkwmdkw",
+                "phone":"8798798798"
+              })
+          )
+      );
+
+      if(response.statusCode==200){
+        EasyLoading.showSuccess("Done");
+        //Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>AddLabour(widget.status)));
+      }else{
+        EasyLoading.showSuccess("Mobile No already Exist");
+      }
+
+    }catch(error){
+      EasyLoading.showError(error.toString());
+    }
+
   }
 }

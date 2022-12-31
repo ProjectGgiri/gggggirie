@@ -79,7 +79,7 @@ class _AddSubVehicalState extends State<AddSubVehical> {
                 children: [
                   SubVehicalCard("assets/images/1.5.png","DOZERS",widget.status,"d"),
                   SizedBox(width: 20,),
-                  SubVehicalCard("assets/images/1.6.png","CRANES",widget.status,"c"),
+                  SubVehicalCard("assets/images/1.6.png","CRANES",widget.status,"cr"),
                 ],
               )
             ],),)

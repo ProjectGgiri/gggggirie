@@ -3,12 +3,14 @@ import 'package:ggiri/Screens/Dashboard/Owner/Cabs/AddSubSubCab.dart';
 import 'package:ggiri/Screens/Dashboard/Owner/SubCat.dart';
 import 'package:ggiri/Screens/Dashboard/Owner/SubSubCat.dart';
 import 'package:ggiri/Screens/Dashboard/Owner/WORK/SubSubWorkCat.dart';
+import 'package:ggiri/Screens/DriversandOperator/CarsCabScreen.dart';
 class SubCabCard extends StatefulWidget {
 
-  String filename,title;
+  String filename,title,tag;
 
 
-  SubCabCard ( this.filename, this.title);
+
+  SubCabCard ( this.filename, this.title,this.tag);
 
   @override
   State<SubCabCard > createState() => _SubCabCardState();
@@ -19,8 +21,14 @@ class _SubCabCardState extends State<SubCabCard > {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
+        if(widget.tag=="c"){
+          Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>AddCarCab(widget.title,"getbycf","getbycff","C","f")));
+        }else if(widget.tag=="b"){
+          Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>AddSecCarCab(widget.title,"getbycf","B","f")));
+        }else if(widget.tag=="a"){
+          Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>AddSecCarCab(widget.title,"getbycf","A","f")));
+        }
 
-       Navigator.push(context, MaterialPageRoute(builder:(BuildContext)=>AddSubSubCab(widget.title)));
       },
       child: Container(
         height: 150,

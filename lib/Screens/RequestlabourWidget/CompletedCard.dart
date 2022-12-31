@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 class labourCompletedCard extends StatefulWidget {
-  const labourCompletedCard({Key? key}) : super(key: key);
+  Map data;
+
+
+  labourCompletedCard(this.data);
 
   @override
   State<labourCompletedCard> createState() => _labourCompletedCardState();
@@ -11,8 +14,8 @@ class _labourCompletedCardState extends State<labourCompletedCard> {
   Widget build(BuildContext context) {
     return Padding(padding: EdgeInsets.all(20),
     child:Container(
-      height: 400,
-      width: 300,
+      height: 350,
+      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
         boxShadow: [
@@ -41,12 +44,12 @@ class _labourCompletedCardState extends State<labourCompletedCard> {
                  children: [Row(
                    mainAxisAlignment: MainAxisAlignment.start,
                    children: [Text('Status :',style: TextStyle(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w900),),
-                     Text('IN PROGRESS',style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.w900),)],
+                     Text('COMPLETED',style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.w900),)],
                  ),Spacer(),Row(
                    mainAxisAlignment: MainAxisAlignment.start,
-                   children: [Text('WID:48264',style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.w900),),
+                   children: [Text('WID:'+widget.data["wid"],style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.w900),),
                      SizedBox(width: 10,),
-                     Text('12-07-2022',style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.w900),)],
+                     Text(widget.data["Date"],style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.w900),)],
                  )],
                ),
              ),
@@ -89,12 +92,12 @@ class _labourCompletedCardState extends State<labourCompletedCard> {
                        width: 150,
                        decoration: BoxDecoration(
                            image: DecorationImage(
-                               image: NetworkImage('https://images.pexels.com/photos/5691590/pexels-photo-5691590.jpeg?auto=compress&cs=tinysrgb&w=600'),fit: BoxFit.fill
+                               image: NetworkImage(widget.data["detail"]["img"]),fit: BoxFit.fill
                            )
                        ),
                      ),),
                      SizedBox(height: 10,),
-                     Text("Electrical",style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.w700),),
+                     Text(widget.data["detail"]["name"],style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.w700),),
                      SizedBox(height: 10,),
                      Row(
                        mainAxisAlignment: MainAxisAlignment.center,
@@ -102,7 +105,7 @@ class _labourCompletedCardState extends State<labourCompletedCard> {
                          Container(height: 40,width: 80,decoration: BoxDecoration(
 
                            color: Color(0xffFFDA92),
-                         ),child: Center(child:  Text("₹ 1000/ Day",maxLines: 1,style: TextStyle(color: Colors.black,fontSize: 11,fontWeight: FontWeight.w700),),)),
+                         ),child: Center(child:  Text(widget.data["detail"]["price"],maxLines: 1,style: TextStyle(color: Colors.black,fontSize: 11,fontWeight: FontWeight.w700),),)),
 
                        ],
                      )
@@ -122,26 +125,27 @@ class _labourCompletedCardState extends State<labourCompletedCard> {
                         SizedBox(height: 10,),
                         Text("Work Details",style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.w700),),
                         SizedBox(height: 10,),
-                        Text("Area",maxLines: 1,style: TextStyle(color: Colors.black,fontSize: 13,fontWeight: FontWeight.w500),),
+                        Text("Duration",maxLines: 1,style: TextStyle(color: Colors.black,fontSize: 13,fontWeight: FontWeight.w500),),
                         SizedBox(height: 10,),
                         Container(height: 20,width: 50,decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
                           color: Color(0xff2A7E6A).withOpacity(0.3),
-                        ),child: Center(child:  Text("3 Acres",maxLines: 1,style: TextStyle(color: Color(0xff2A7E6A),fontSize: 11,fontWeight: FontWeight.w600),),)),
+                        ),child: Center(child:  Text(widget.data["WorkD"]["duration"],maxLines: 1,style: TextStyle(color: Color(0xff2A7E6A),fontSize: 11,fontWeight: FontWeight.w600),),)),
                         SizedBox(height: 10,),
-                        Text("Work District",maxLines: 1,style: TextStyle(color: Colors.black,fontSize: 13,fontWeight: FontWeight.w500),),
+                        Text('Shift',maxLines: 1,style: TextStyle(color: Colors.black,fontSize: 13,fontWeight: FontWeight.w500),),
                         SizedBox(height: 10,),
                         Container(height: 20,width: 60,decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
                           color: Color(0xff2A7E6A).withOpacity(0.3),
-                        ),child: Center(child: Text("Medchal",maxLines: 1,style: TextStyle(color: Color(0xff2A7E6A),fontSize: 11,fontWeight: FontWeight.w800),))),
+                        ),child: Center(child: Text(widget.data["WorkD"]["Shift"],maxLines: 1,style: TextStyle(color: Color(0xff2A7E6A),fontSize: 12,fontWeight: FontWeight.w800),))),
                         SizedBox(height: 10,),
-                        Text("Discription",maxLines: 1,style: TextStyle(color: Colors.black,fontSize: 13,fontWeight: FontWeight.w500),),
-                        SizedBox(height: 5,),
-                        Text("Soil Transport",maxLines: 1,style: TextStyle(color: Colors.black,fontSize: 9,fontWeight: FontWeight.w500),),
-                        SizedBox(height: 20,),
-
-
+                        Text("Work District",maxLines: 1,style: TextStyle(color: Colors.black,fontSize: 13,fontWeight: FontWeight.w800),),
+                        SizedBox(height: 10,),
+                        Container(height: 20,width: 60,decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          color: Color(0xff2A7E6A).withOpacity(0.3),
+                        ),child: Center(child: Text(widget.data["WorkD"]["Workdis"],maxLines: 1,style: TextStyle(color: Color(0xff2A7E6A),fontSize: 11,fontWeight: FontWeight.w800),))),
+                        SizedBox(height: 10,),
                       ],
                     ),
                   ),

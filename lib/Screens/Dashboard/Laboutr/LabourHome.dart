@@ -9,6 +9,7 @@ import 'package:ggiri/Screens/Dashboard/Owner/Dashboard/MyVehical.dart';
 import 'package:ggiri/Screens/RequestlabourWidget/CompletedCard.dart';
 import 'package:ggiri/Screens/RequestlabourWidget/Inprogresscard.dart';
 import 'package:ggiri/Screens/RequestlabourWidget/RequestCard.dart';
+import 'package:ggiri/Screens/Widgets/Labour/SwipeScreen.dart';
 import 'package:ggiri/Screens/Widgets/Operator/OnGoing.dart';
 import 'package:ggiri/Screens/Widgets/Operator/OpenRequest.dart';
 import 'package:ggiri/Screens/Widgets/Operator/OperatorComp.dart';
@@ -161,9 +162,12 @@ class _LabourHomeState extends State<LabourHome > with SingleTickerProviderState
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  LRequestCard(),
-                  LInProgressCard() ,
-                  labourCompletedCard()
+                  SwipeScreen("O"),
+                  SwipeScreen("A"),
+                  SwipeScreen("C")
+                 // LRequestCard(),
+                  //LInProgressCard() ,
+                  //labourCompletedCard()
                 ],
               ),
             )
